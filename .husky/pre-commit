@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo ' 🏗️👷 Styling your project before committing 👷‍♂️🏗️'
+
+npm run typecheck ||
+(
+    echo '\n';
+    echo ' ❌ Commit failed, you have a problem in your code ❌';
+    echo ' 🔎 Run "npm run typecheck" or "npm run typecheck:watch" to find out more 🔎';
+    echo '\n';
+    false;
+)
+npx lint-staged ||
+(
+    echo '\n';
+    echo ' ❌ Commit failed, you have a problem in your code ❌';
+    echo ' 🔎 Run "npm run lint" or "npm run tsc" to find out more 🔎';
+    echo '\n';
+    false;
+)
+
+echo ' ✅ 🎉 No error found: try committing this now.... ✨🚀'
+echo '\n';

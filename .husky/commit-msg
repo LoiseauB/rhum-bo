@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+
+echo ' 📝 Check commit message convention 📝';
+npx --no-install commitlint --config commitlint.config.cjs --edit $1 ||
+(
+    echo ' ❌ Commit failed, error in your commit message ❌';
+    echo ' Please follow the commit message convention';
+    echo ' ⬆️ More information above ⬆️';
+    echo '\n';
+    false;
+)
