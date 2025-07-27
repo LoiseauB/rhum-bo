@@ -9,11 +9,11 @@ export default class SequelizeUserRepository implements IUserRepository {
   async update(user: User): Promise<void> {
     await UserModel.update({ ...user.props }, { where: { id: user.props.id } });
   }
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await UserModel.destroy({ where: { id } });
   }
-  async findById(id: number): Promise<User | null> {
-    const user = await UserModel.findByPk(id);
+  async findById(id: string): Promise<User | null> {
+    const user = await UserModel.scope('withoutPassword').findByPk(id);
     return user ? new User(user.toJSON()) : null;
   }
   async findByEmail(email: string): Promise<User | null> {
@@ -21,7 +21,7 @@ export default class SequelizeUserRepository implements IUserRepository {
     return user ? new User(user.toJSON()) : null;
   }
   async findAll(): Promise<User[]> {
-    const users = await UserModel.findAll();
+    const users = await UserModel.scope('withoutPassword').findAll();
     return users.map(user => new User(user.toJSON()));
   }
 }

@@ -10,9 +10,9 @@ const UserModel = sequelize.define<UserInstance>(
   'User',
   {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       primaryKey: true,
-      autoIncrement: true,
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING,

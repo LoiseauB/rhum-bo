@@ -16,13 +16,13 @@ export class InMemoryUserRepository implements IUserRepository {
       this.database[index] = user;
     }
   }
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const index = this.database.findIndex(u => u.props.id === id);
     if (index !== -1) {
       this.database.splice(index, 1);
     }
   }
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     return this.database.find(u => u.props.id === id) ?? null;
   }
   async findByEmail(email: string): Promise<User | null> {
