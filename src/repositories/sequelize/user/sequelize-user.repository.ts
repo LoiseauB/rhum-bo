@@ -4,10 +4,10 @@ import UserModel from './sequelize-user.model';
 
 export default class SequelizeUserRepository implements IUserRepository {
   async create(user: User): Promise<void> {
-    await UserModel.create({ ...user.props });
+    await UserModel.create(user.props);
   }
   async update(user: User): Promise<void> {
-    await UserModel.update({ ...user.props }, { where: { id: user.props.id } });
+    await UserModel.update(user.props, { where: { id: user.props.id } });
   }
   async delete(id: string): Promise<void> {
     await UserModel.destroy({ where: { id } });

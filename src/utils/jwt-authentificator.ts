@@ -21,8 +21,12 @@ export class JwtAuthenticator implements IAuthenticator {
   }
 
   generateToken(user: User): string {
-    return jwt.sign({ email: user.props.email }, 'SECRET_KEY', {
-      expiresIn: '1h',
-    });
+    return jwt.sign(
+      { email: user.props.email, id: user.props.id, role: user.props.role, pseudo: user.props.pseudo },
+      'SECRET_KEY',
+      {
+        expiresIn: '1h',
+      },
+    );
   }
 }

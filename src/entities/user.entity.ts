@@ -1,9 +1,11 @@
+import { RolesEnum } from '@/enums/roles.enum';
+
 export type UserProps = {
   id: string;
   email: string;
   password: string;
   pseudo: string;
-  role: string;
+  role: RolesEnum;
   avatar?: string;
 };
 
