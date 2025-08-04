@@ -8,7 +8,7 @@ export class JwtAuthenticator implements IAuthenticator {
 
   async authenticate(token: string): Promise<User> {
     try {
-      const decoded = jwt.verify(token, 'SECRET') as { email: string };
+      const decoded = jwt.verify(token, process.env.JWT_SECRET) as { email: string };
       const user = await this.userRepository.findByEmail(decoded.email);
 
       if (!user) throw new Error('User not found');
@@ -23,7 +23,7 @@ export class JwtAuthenticator implements IAuthenticator {
   generateToken(user: User): string {
     return jwt.sign(
       { email: user.props.email, id: user.props.id, role: user.props.role, pseudo: user.props.pseudo },
-      'SECRET_KEY',
+      process.env.JWT_SECRET,
       {
         expiresIn: '1h',
       },
