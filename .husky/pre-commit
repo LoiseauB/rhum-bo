@@ -19,6 +19,14 @@ npx lint-staged ||
     echo '\n';
     false;
 )
+npm run test ||
+(
+    echo '\n';
+    echo ' ❌ Commit failed, you have a problem in your code ❌';
+    echo ' 🔎 Run "npm run test" to find out more 🔎';
+    echo '\n';
+    false;
+)
 
 echo ' ✅ 🎉 No error found: try committing this now.... ✨🚀'
 echo '\n';
