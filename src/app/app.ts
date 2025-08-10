@@ -1,11 +1,14 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import express, { Express } from 'express';
-
 import cors from 'cors';
+import express, { Express, Router } from 'express';
 import helmet from 'helmet';
 
+import authRoute from '@/app/routes/auth.route';
+import userRoute from '@/app/routes/user.route';
+
 const app: Express = express();
+const apiRouter: Router = express.Router();
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -17,5 +20,10 @@ app.use(
   }),
 );
 app.use(helmet());
+
+apiRouter.use(authRoute);
+apiRouter.use(userRoute);
+
+app.use('/api', apiRouter);
 
 export default app;
