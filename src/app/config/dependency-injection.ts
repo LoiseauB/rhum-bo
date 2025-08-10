@@ -8,6 +8,8 @@ import { IProtectPassword } from '@/interfaces/protect-password.interface';
 import ProtectPassword from '@/utils/protectPassword';
 import { JwtAuthenticator } from '@/utils/jwt-authentificator';
 import AuthService from '@/services/auth.service';
+import { IImageSaver } from '@/interfaces/image-saver.interface';
+import S3Service from '@/services/s3.service';
 
 export interface Dependencies {
   userService: UserService;
@@ -16,6 +18,7 @@ export interface Dependencies {
   authenticator: IAuthenticator;
   idGenerator: IIDGenerator;
   protectPassword: IProtectPassword;
+  imageSaver: IImageSaver;
 }
 
 const container = createContainer<Dependencies>();
@@ -24,15 +27,17 @@ container.register({
   userRepository: asValue(new SequelizeUserRepository()),
   idGenerator: asClass(UUIDGenerator).singleton(),
   protectPassword: asClass(ProtectPassword).singleton(),
+  imageSaver: asClass(S3Service).singleton(),
 });
 
 const userRepository = container.resolve('userRepository');
 const idGenerator = container.resolve('idGenerator');
 const protectPassword = container.resolve('protectPassword');
+const imageSaver = container.resolve('imageSaver');
 
 container.register({
   authenticator: asValue(new JwtAuthenticator(userRepository)),
-  userService: asValue(new UserService(userRepository, idGenerator, protectPassword)),
+  userService: asValue(new UserService(userRepository, idGenerator, protectPassword, imageSaver)),
 });
 
 const authenticator = container.resolve('authenticator');
