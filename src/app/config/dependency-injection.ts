@@ -1,15 +1,16 @@
+import { IImageSaver } from '@/interfaces/image-saver.interface';
+import { IProtectPassword } from '@/interfaces/protect-password.interface';
 import SequelizeUserRepository from '@/repositories/sequelize/user/sequelize-user.repository';
+import AuthService from '@/services/auth.service';
+import S3Service from '@/services/s3.service';
 import UserService from '@/services/user.service';
+import { JwtAuthenticator } from '@/utils/jwt-authentificator';
+import ProtectPassword from '@/utils/protectPassword';
+import { s3Client } from '@/utils/s3Client';
 import { asClass, asValue, createContainer } from 'awilix';
 import { IAuthenticator } from '../../interfaces/authenticator.interface';
 import { IIDGenerator } from '../../interfaces/id-generator.interface';
 import { UUIDGenerator } from '../../utils/uuid-generator';
-import { IProtectPassword } from '@/interfaces/protect-password.interface';
-import ProtectPassword from '@/utils/protectPassword';
-import { JwtAuthenticator } from '@/utils/jwt-authentificator';
-import AuthService from '@/services/auth.service';
-import { IImageSaver } from '@/interfaces/image-saver.interface';
-import S3Service from '@/services/s3.service';
 
 export interface Dependencies {
   userService: UserService;
@@ -27,7 +28,7 @@ container.register({
   userRepository: asValue(new SequelizeUserRepository()),
   idGenerator: asClass(UUIDGenerator).singleton(),
   protectPassword: asClass(ProtectPassword).singleton(),
-  imageSaver: asClass(S3Service).singleton(),
+  imageSaver: asValue(new S3Service(s3Client)),
 });
 
 const userRepository = container.resolve('userRepository');
