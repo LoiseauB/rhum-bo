@@ -1,7 +1,6 @@
 import { IImageSaver } from '@/interfaces/image-saver.interface';
 import getEnvVar from '@/utils/getEnvVar';
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { DeleteObjectCommand, ObjectCannedACL, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 export default class S3Service implements IImageSaver {
   constructor(private readonly s3Client: S3Client) {}
@@ -11,18 +10,18 @@ export default class S3Service implements IImageSaver {
         Bucket: getEnvVar('AWS_BUCKET_NAME'),
         Key: `${folderName}/${fileName}`,
         Body: filePath,
+        ACL: 'public-read' as ObjectCannedACL,
       };
       await this.s3Client.send(new PutObjectCommand(uploadParams));
-      const avatarUrl = await getSignedUrl(
-        this.s3Client,
-        new GetObjectCommand({ Bucket: uploadParams.Bucket, Key: uploadParams.Key }),
-      );
-      return avatarUrl;
+
+      const publicUrl = `https://${uploadParams.Bucket}.s3.${getEnvVar('AWS_REGION')}.amazonaws.com/${uploadParams.Key}`;
+      return publicUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
       throw error;
     }
   }
+
   async deleteImage(fileName: string): Promise<void> {
     try {
       const deleteParams = {
