@@ -22,11 +22,11 @@ export default class S3Service implements IImageSaver {
     }
   }
 
-  async deleteImage(fileName: string): Promise<void> {
+  async deleteImage(fileName: string, folderName: string): Promise<void> {
     try {
       const deleteParams = {
         Bucket: getEnvVar('AWS_BUCKET_NAME'),
-        Key: fileName,
+        Key: `${folderName}/${fileName}`,
       };
       await this.s3Client.send(new DeleteObjectCommand(deleteParams));
     } catch (error) {
