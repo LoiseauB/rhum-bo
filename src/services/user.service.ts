@@ -21,12 +21,23 @@ export default class UserService {
   ) {}
 
   async createUser({ email, password, pseudo, avatar }: UserPayload): Promise<string> {
-    const hashedPassword = await this.protectPassword.hash(password);
+    let avatarUrl: string | undefined;
     const id = this.idGenerator.generate();
-    const avatarUrl = avatar ? await this.imageSaver.uploadImage(id, avatar, 'avatars') : undefined;
-    const user = new User({ id, email, pseudo, avatar: avatarUrl, password: hashedPassword, role: RolesEnum.USER });
-    await this.userRepository.create(user);
-    return id;
+
+    try {
+      const hashedPassword = await this.protectPassword.hash(password);
+      if (avatar) {
+        avatarUrl = await this.imageSaver.uploadImage(id, avatar, 'avatars');
+      }
+      const user = new User({ id, email, pseudo, avatar: avatarUrl, password: hashedPassword, role: RolesEnum.USER });
+      await this.userRepository.create(user);
+      return id;
+    } catch (error) {
+      if (avatarUrl) {
+        await this.imageSaver.deleteImage(avatarUrl);
+      }
+      throw error;
+    }
   }
 
   async updateUser(id: string, { email, password, pseudo, avatar }: UserPayload, role?: RolesEnum): Promise<void> {
