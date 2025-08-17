@@ -4,7 +4,7 @@ import { IIDGenerator } from '@/interfaces/id-generator.interface';
 import { IImageSaver } from '@/interfaces/image-saver.interface';
 import { IProtectPassword } from '@/interfaces/protect-password.interface';
 import { IUserRepository } from '@/interfaces/user-repository.interface';
-import { awsFolderNames } from '@/utils/s3Client';
+import { awsFolderNames } from '@/utils/awsFolders';
 
 export type UserPayload = {
   email: string;

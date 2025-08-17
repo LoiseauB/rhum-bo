@@ -1,7 +1,3 @@
-import { config } from 'dotenv';
-
-config();
-
 import { User } from '@/entities/user.entity';
 import { RolesEnum } from '@/enums/roles.enum';
 import { IIDGenerator } from '@/interfaces/id-generator.interface';
