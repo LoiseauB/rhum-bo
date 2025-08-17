@@ -1,6 +1,7 @@
 import { User } from '@/entities/user.entity';
 import { RolesEnum } from '@/enums/roles.enum';
 import { IIDGenerator } from '@/interfaces/id-generator.interface';
+import { IImageSaver } from '@/interfaces/image-saver.interface';
 import { IProtectPassword } from '@/interfaces/protect-password.interface';
 import { IUserRepository } from '@/interfaces/user-repository.interface';
 import UserService from '@/services/user.service';
@@ -10,6 +11,7 @@ describe('UserService', () => {
   let userRepository: jest.Mocked<IUserRepository>;
   let idGenerator: jest.Mocked<IIDGenerator>;
   let protectPassword: jest.Mocked<IProtectPassword>;
+  let imageSaver: jest.Mocked<IImageSaver>;
 
   beforeEach(() => {
     userRepository = {
@@ -31,7 +33,12 @@ describe('UserService', () => {
       validatePassword: jest.fn(),
     };
 
-    userService = new UserService(userRepository, idGenerator, protectPassword);
+    imageSaver = {
+      uploadImage: jest.fn(),
+      deleteImage: jest.fn(),
+    };
+
+    userService = new UserService(userRepository, idGenerator, protectPassword, imageSaver);
   });
 
   describe('createUser', () => {
@@ -40,7 +47,6 @@ describe('UserService', () => {
         email: 'test@example.com',
         password: 'password123',
         pseudo: 'testuser',
-        avatar: 'avatar.png',
       };
 
       const hashedPassword = 'hashedPassword';
@@ -58,7 +64,6 @@ describe('UserService', () => {
           id,
           email: userPayload.email,
           pseudo: userPayload.pseudo,
-          avatar: userPayload.avatar,
           password: hashedPassword,
           role: RolesEnum.USER,
         }),
@@ -73,7 +78,6 @@ describe('UserService', () => {
         email: 'updated@example.com',
         password: 'newpassword123',
         pseudo: 'updateduser',
-        avatar: 'newavatar.png',
       };
 
       const existingUser = new User({
@@ -82,7 +86,6 @@ describe('UserService', () => {
         password: 'hashedPassword',
         pseudo: 'testuser',
         role: RolesEnum.USER,
-        avatar: 'avatar.png',
       });
 
       const hashedPassword = 'newHashedPassword';
@@ -101,7 +104,6 @@ describe('UserService', () => {
           id: userId,
           email: userPayload.email,
           pseudo: userPayload.pseudo,
-          avatar: userPayload.avatar,
           password: hashedPassword,
           role: RolesEnum.USER,
         }),
@@ -114,7 +116,6 @@ describe('UserService', () => {
         email: 'updated@example.com',
         password: 'newpassword123',
         pseudo: 'updateduser',
-        avatar: 'newavatar.png',
       };
 
       userRepository.findById.mockResolvedValue(null);
@@ -142,7 +143,6 @@ describe('UserService', () => {
         password: 'hashedPassword',
         pseudo: 'testuser',
         role: RolesEnum.USER,
-        avatar: 'avatar.png',
       });
 
       userRepository.findById.mockResolvedValue(user);
@@ -174,7 +174,6 @@ describe('UserService', () => {
         password: 'hashedPassword',
         pseudo: 'testuser',
         role: RolesEnum.USER,
-        avatar: 'avatar.png',
       });
 
       userRepository.findByEmail.mockResolvedValue(user);
@@ -206,7 +205,6 @@ describe('UserService', () => {
           password: 'hashedPassword',
           pseudo: 'testuser',
           role: RolesEnum.USER,
-          avatar: 'avatar.png',
         }),
         new User({
           id: '456',
@@ -214,7 +212,6 @@ describe('UserService', () => {
           password: 'hashedPassword2',
           pseudo: 'testuser2',
           role: RolesEnum.USER,
-          avatar: 'avatar2.png',
         }),
       ];
 
