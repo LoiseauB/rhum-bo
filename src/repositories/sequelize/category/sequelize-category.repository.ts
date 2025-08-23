@@ -1,7 +1,8 @@
 import { CategoryProps } from '@/entities/category.entity';
 import CategoryModel from './sequelize-category.model';
+import { ICategoryRepository } from '@/interfaces/category-repository.interface';
 
-export default class SequelizeCategoryRepository {
+export default class SequelizeCategoryRepository implements ICategoryRepository {
   async create(category: CategoryProps): Promise<void> {
     await CategoryModel.create(category);
   }
