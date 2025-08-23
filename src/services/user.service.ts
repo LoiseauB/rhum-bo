@@ -4,6 +4,7 @@ import { IIDGenerator } from '@/interfaces/id-generator.interface';
 import { IImageSaver } from '@/interfaces/image-saver.interface';
 import { IProtectPassword } from '@/interfaces/protect-password.interface';
 import { IUserRepository } from '@/interfaces/user-repository.interface';
+import { awsFolderNames } from '@/utils/awsFolders';
 
 export type UserPayload = {
   email: string;
@@ -27,14 +28,14 @@ export default class UserService {
     try {
       const hashedPassword = await this.protectPassword.hash(password);
       if (avatar) {
-        avatarUrl = await this.imageSaver.uploadImage(id, avatar, 'avatars');
+        avatarUrl = await this.imageSaver.uploadImage(id, avatar, awsFolderNames.avatars);
       }
       const user = new User({ id, email, pseudo, avatar: avatarUrl, password: hashedPassword, role: RolesEnum.USER });
       await this.userRepository.create(user);
       return id;
     } catch (error) {
       if (avatarUrl) {
-        await this.imageSaver.deleteImage(avatarUrl);
+        await this.imageSaver.deleteImage(id, awsFolderNames.avatars);
       }
       throw error;
     }
@@ -50,7 +51,7 @@ export default class UserService {
     let avatarUrl: string | undefined;
     if (avatar) {
       if (user.props.avatar) {
-        await this.imageSaver.deleteImage(user.props.avatar);
+        await this.imageSaver.deleteImage(user.props.id, awsFolderNames.avatars);
       }
       avatarUrl = await this.imageSaver.uploadImage(id, avatar, 'avatars');
     }
@@ -67,7 +68,7 @@ export default class UserService {
 
   async deleteUser(id: string): Promise<void> {
     const user = await this.userRepository.findById(id);
-    if (user?.props.avatar) await this.imageSaver.deleteImage(user.props.avatar);
+    if (user?.props.avatar) await this.imageSaver.deleteImage(user.props.id, awsFolderNames.avatars);
     await this.userRepository.delete(id);
   }
 

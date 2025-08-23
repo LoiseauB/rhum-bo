@@ -11,6 +11,8 @@ import { asClass, asValue, createContainer } from 'awilix';
 import { IAuthenticator } from '../../interfaces/authenticator.interface';
 import { IIDGenerator } from '../../interfaces/id-generator.interface';
 import { UUIDGenerator } from '../../utils/uuid-generator';
+import SequelizeCategoryRepository from '@/repositories/sequelize/category/sequelize-category.repository';
+import CathegoryService from '@/services/category.service';
 
 export interface Dependencies {
   userService: UserService;
@@ -20,6 +22,8 @@ export interface Dependencies {
   idGenerator: IIDGenerator;
   protectPassword: IProtectPassword;
   imageSaver: IImageSaver;
+  categoryRepository: SequelizeCategoryRepository;
+  categoryService: CathegoryService;
 }
 
 const container = createContainer<Dependencies>();
@@ -29,16 +33,19 @@ container.register({
   idGenerator: asClass(UUIDGenerator).singleton(),
   protectPassword: asClass(ProtectPassword).singleton(),
   imageSaver: asValue(new S3Service(s3Client)),
+  categoryRepository: asValue(new SequelizeCategoryRepository()),
 });
 
 const userRepository = container.resolve('userRepository');
 const idGenerator = container.resolve('idGenerator');
 const protectPassword = container.resolve('protectPassword');
 const imageSaver = container.resolve('imageSaver');
+const categoryRepository = container.resolve('categoryRepository');
 
 container.register({
   authenticator: asValue(new JwtAuthenticator(userRepository)),
   userService: asValue(new UserService(userRepository, idGenerator, protectPassword, imageSaver)),
+  categoryService: asValue(new CathegoryService(categoryRepository)),
 });
 
 const authenticator = container.resolve('authenticator');
