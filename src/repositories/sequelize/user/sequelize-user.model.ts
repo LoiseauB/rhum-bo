@@ -1,6 +1,7 @@
 import { UserProps } from '@/entities/user.entity';
 import { sequelize } from '@/utils/connectDB';
 import { DataTypes, Model, Optional } from 'sequelize';
+import CommentModel from '../comments/sequelize-comment.model';
 
 // Define the User model interface
 interface UserInstance extends Model<UserProps, Optional<UserProps, 'id'>>, UserProps {}
@@ -55,5 +56,11 @@ const UserModel = sequelize.define<UserInstance>(
     },
   },
 );
+
+UserModel.hasMany(CommentModel, {
+  foreignKey: 'userId',
+  as: 'comments',
+  onDelete: 'CASCADE',
+});
 
 export default UserModel;

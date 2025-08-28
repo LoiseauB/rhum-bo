@@ -2,9 +2,10 @@ import { CommentProps } from '@/entities/comment.entity';
 import { sequelize } from '@/utils/connectDB';
 import { DataTypes, Model, Optional } from 'sequelize';
 import BottleModel from '../bottle/sequelize-bottle.model';
+import PublicationStatusModel from '../publication-status/sequelize-publication-status.model';
 import UserModel from '../user/sequelize-user.model';
 
-interface CommentInstance extends Model<CommentProps, Optional<CommentProps, 'id'>>, CommentProps {}
+export interface CommentInstance extends Model<CommentProps, Optional<CommentProps, 'id'>>, CommentProps {}
 
 const CommentModel = sequelize.define<CommentInstance>(
   'Comment',
@@ -32,8 +33,17 @@ const CommentModel = sequelize.define<CommentInstance>(
       },
       field: 'bottle_id',
     },
+    publicationStatusId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'publication_status',
+        key: 'id',
+      },
+      field: 'publication_status_id',
+    },
     text: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       field: 'text',
       allowNull: false,
     },
@@ -42,25 +52,20 @@ const CommentModel = sequelize.define<CommentInstance>(
     tableName: 'comments',
   },
 );
-BottleModel.hasMany(CommentModel, {
-  foreignKey: 'bottleId',
-  as: 'comments',
-  onDelete: 'CASCADE',
-});
 
 CommentModel.belongsTo(BottleModel, {
   foreignKey: 'bottleId',
   as: 'bottle',
 });
-UserModel.hasMany(CommentModel, {
-  foreignKey: 'userId',
-  as: 'comments',
-  onDelete: 'CASCADE',
-});
 
 CommentModel.belongsTo(UserModel, {
   foreignKey: 'userId',
   as: 'user',
+});
+
+CommentModel.belongsTo(PublicationStatusModel, {
+  foreignKey: 'publicationStatusId',
+  as: 'publicationStatus',
 });
 
 export default CommentModel;

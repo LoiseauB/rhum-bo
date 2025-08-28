@@ -2,6 +2,7 @@ export type CommentProps = {
   id: number;
   bottleId: number;
   userId: string;
+  publicationStatusId: number;
   text: string;
 };
 

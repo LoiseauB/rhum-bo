@@ -3,6 +3,8 @@ export type BottleProps = {
   name: string;
   description: string;
   imageUrl: string;
+  country_id: number;
+  publicationStatusId: number;
 };
 
 export class Bottle {
