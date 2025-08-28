@@ -2,7 +2,7 @@ import { ICommentRepository } from '@/interfaces/comment-repository.interface';
 import CommentModel from './sequelize-comment.model';
 import { CommentProps } from '@/entities/comment.entity';
 
-class CommentRepository implements ICommentRepository {
+export class SequelizeCommentRepository implements ICommentRepository {
   async create(comment: CommentProps): Promise<CommentProps> {
     const createdComment = await CommentModel.create(comment);
     return createdComment.toJSON();
@@ -42,5 +42,3 @@ class CommentRepository implements ICommentRepository {
     return comments.map(comment => comment.toJSON());
   }
 }
-
-export default new CommentRepository();

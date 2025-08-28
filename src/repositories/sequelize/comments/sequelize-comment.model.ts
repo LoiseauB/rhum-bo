@@ -16,7 +16,7 @@ const CommentModel = sequelize.define<CommentInstance>(
       autoIncrement: true,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'users',
@@ -58,14 +58,31 @@ CommentModel.belongsTo(BottleModel, {
   as: 'bottle',
 });
 
+BottleModel.hasMany(CommentModel, {
+  foreignKey: 'bottleId',
+  as: 'comments',
+  onDelete: 'CASCADE',
+});
+
 CommentModel.belongsTo(UserModel, {
   foreignKey: 'userId',
   as: 'user',
 });
 
+UserModel.hasMany(CommentModel, {
+  foreignKey: 'userId',
+  as: 'comments',
+  onDelete: 'CASCADE',
+});
+
 CommentModel.belongsTo(PublicationStatusModel, {
   foreignKey: 'publicationStatusId',
   as: 'publicationStatus',
+});
+
+PublicationStatusModel.hasMany(CommentModel, {
+  foreignKey: 'publication_status_id',
+  as: 'comments',
 });
 
 export default CommentModel;

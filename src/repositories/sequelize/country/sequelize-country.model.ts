@@ -1,7 +1,7 @@
 import { CountryProps } from '@/entities/country.entity';
 import { sequelize } from '@/utils/connectDB';
 import { DataTypes, Model, Optional } from 'sequelize';
-import BottleModel, { BottleInstance } from '../bottle/sequelize-bottle.model';
+import { BottleInstance } from '../bottle/sequelize-bottle.model';
 
 interface CountryInstance extends Model<CountryProps, Optional<CountryProps, 'id'>>, CountryProps {
   getBottles(): BottleInstance[];
@@ -26,10 +26,5 @@ const CountryModel = sequelize.define<CountryInstance>(
     tableName: 'countries',
   },
 );
-
-CountryModel.hasMany(BottleModel, {
-  foreignKey: 'country_id',
-  as: 'bottles',
-});
 
 export default CountryModel;

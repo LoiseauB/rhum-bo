@@ -18,7 +18,7 @@ const RateModel = sequelize.define<RateInstance>(
       },
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
       references: {

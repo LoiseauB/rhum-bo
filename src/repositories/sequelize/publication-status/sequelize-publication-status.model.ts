@@ -1,8 +1,8 @@
 import { PublicationStatusProps } from '@/entities/publication-status.entity';
 import { sequelize } from '@/utils/connectDB';
 import { DataTypes, Model, Optional } from 'sequelize';
-import BottleModel, { BottleInstance } from '../bottle/sequelize-bottle.model';
-import CommentModel, { CommentInstance } from '../comments/sequelize-comment.model';
+import { BottleInstance } from '../bottle/sequelize-bottle.model';
+import { CommentInstance } from '../comments/sequelize-comment.model';
 
 interface PublicationStatusInstance
   extends Model<PublicationStatusProps, Optional<PublicationStatusProps, 'id'>>,
@@ -28,15 +28,5 @@ const PublicationStatusModel = sequelize.define<PublicationStatusInstance>(
     tableName: 'publication_status',
   },
 );
-
-PublicationStatusModel.hasMany(BottleModel, {
-  foreignKey: 'publication_status_id',
-  as: 'bottles',
-});
-
-PublicationStatusModel.hasMany(CommentModel, {
-  foreignKey: 'publication_status_id',
-  as: 'comments',
-});
 
 export default PublicationStatusModel;

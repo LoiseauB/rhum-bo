@@ -2,7 +2,6 @@ import { BottleProps } from '@/entities/bottle.entity';
 import { sequelize } from '@/utils/connectDB';
 import { DataTypes, Model, Optional } from 'sequelize';
 import { CategoryInstance } from '../category/sequelize-category.model';
-import CommentModel from '../comments/sequelize-comment.model';
 import CountryModel from '../country/sequelize-country.model';
 import PublicationStatusModel from '../publication-status/sequelize-publication-status.model';
 
@@ -72,15 +71,19 @@ BottleModel.belongsTo(CountryModel, {
   as: 'country',
 });
 
+CountryModel.hasMany(BottleModel, {
+  foreignKey: 'country_id',
+  as: 'bottles',
+});
+
 BottleModel.belongsTo(PublicationStatusModel, {
   foreignKey: 'publicationStatusId',
   as: 'publicationStatus',
 });
 
-BottleModel.hasMany(CommentModel, {
-  foreignKey: 'bottleId',
-  as: 'comments',
-  onDelete: 'CASCADE',
+PublicationStatusModel.hasMany(BottleModel, {
+  foreignKey: 'publication_status_id',
+  as: 'bottles',
 });
 
 export default BottleModel;

@@ -2,7 +2,7 @@ import { Country } from '@/entities/country.entity';
 import { ICountryRepository } from '@/interfaces/country-repository.interface';
 import CountryModel from './sequelize-country.model';
 
-class CountryRepository implements ICountryRepository {
+export class SequelizeCountryRepository implements ICountryRepository {
   async createCountry(name: string): Promise<void> {
     await CountryModel.create({ name });
   }
@@ -35,5 +35,3 @@ class CountryRepository implements ICountryRepository {
     return null;
   }
 }
-
-export default new CountryRepository();
