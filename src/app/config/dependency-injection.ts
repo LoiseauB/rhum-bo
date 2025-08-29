@@ -21,6 +21,10 @@ import { IIDGenerator } from '../../interfaces/id-generator.interface';
 import { UUIDGenerator } from '../../utils/uuid-generator';
 import { SequelizeCommentRepository } from '@/repositories/sequelize/comments/sequelize-comment.repository';
 import { SequelizeCountryRepository } from '@/repositories/sequelize/country/sequelize-country.repository';
+import { IFavoriteRepository } from '@/interfaces/favorite-repository.interface';
+import { IBottleCategoryRepository } from '@/interfaces/bottle-category-repository.interface';
+import { SequelizeFavoriteRepository } from '@/repositories/sequelize/favorite/sequelize-favorite.repository';
+import { SequelizeBottleCategoryRepository } from '@/repositories/sequelize/bottle-category/sequelize-bottle-category.repository';
 
 export interface Dependencies {
   userService: UserService;
@@ -36,6 +40,8 @@ export interface Dependencies {
   commentRepository: ICommentRepository;
   countryRepository: ICountryRepository;
   publicationStatusRepository: IPublicationStatusRepository;
+  favoriteRepository: IFavoriteRepository;
+  bottleCategoryRepository: IBottleCategoryRepository;
 }
 
 const container = createContainer<Dependencies>();
@@ -50,6 +56,8 @@ container.register({
   commentRepository: asValue(new SequelizeCommentRepository()),
   countryRepository: asValue(new SequelizeCountryRepository()),
   publicationStatusRepository: asValue(new SequelizePublicationStatusRepository()),
+  favoriteRepository: asValue(new SequelizeFavoriteRepository()),
+  bottleCategoryRepository: asValue(new SequelizeBottleCategoryRepository()),
 });
 
 const userRepository = container.resolve('userRepository');
