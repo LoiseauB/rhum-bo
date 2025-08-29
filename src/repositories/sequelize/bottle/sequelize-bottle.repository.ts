@@ -1,15 +1,17 @@
 import { Bottle } from '@/entities/bottle.entity';
 import { Category } from '@/entities/category.entity';
-import { IBottleRepository } from '@/interfaces/bottle-repository.interface';
+import { BottleWithDetails, IBottleRepository } from '@/interfaces/bottle-repository.interface';
 import { sequelize } from '@/utils/connectDB';
 import CommentModel from '../comments/sequelize-comment.model';
 import RateModel from '../rate/sequelize-rate.model';
 import UserModel from '../user/sequelize-user.model';
 import BottleModel from './sequelize-bottle.model';
+import CategoryModel from '../category/sequelize-category.model';
 
 export class SequelizeBottleRepository implements IBottleRepository {
-  async create(bottle: Bottle): Promise<void> {
-    await BottleModel.create(bottle.props);
+  async create(bottle: Bottle): Promise<Bottle> {
+    const savedBottle = await BottleModel.create(bottle.props);
+    return new Bottle(savedBottle.toJSON());
   }
 
   async update(bottle: Bottle): Promise<void> {
@@ -29,9 +31,19 @@ export class SequelizeBottleRepository implements IBottleRepository {
   }
 
   async findById(id: number): Promise<Bottle | null> {
-    const bottle = await BottleModel.findOne({
+    const bottle = await BottleModel.findByPk(id);
+    return bottle ? new Bottle(bottle.toJSON()) : null;
+  }
+
+  async findByIdWithDetails(id: number): Promise<BottleWithDetails | null> {
+    const bottle = (await BottleModel.findOne({
       where: { id },
       include: [
+        {
+          model: CategoryModel,
+          as: 'categories',
+          attributes: ['label'],
+        },
         {
           model: RateModel,
           as: 'rates',
@@ -40,7 +52,7 @@ export class SequelizeBottleRepository implements IBottleRepository {
         {
           model: CommentModel,
           as: 'comments',
-          attributes: ['id', 'text', 'userId'],
+          attributes: ['id', 'text', 'userId', 'updatedAt'],
           include: [
             {
               model: UserModel,
@@ -54,8 +66,8 @@ export class SequelizeBottleRepository implements IBottleRepository {
         include: [[sequelize.literal('ROUND(AVG(ratings.rating), 0)'), 'avgRating']],
       },
       group: ['Bottle.id', 'comments.id'],
-    });
-    return bottle ? new Bottle(bottle.toJSON()) : null;
+    })) as unknown as BottleWithDetails;
+    return bottle ? bottle : null;
   }
 
   async findByName(name: string): Promise<Bottle[] | null> {
@@ -79,7 +91,7 @@ export class SequelizeBottleRepository implements IBottleRepository {
 
   async getBottlesByCountryId(countryId: number): Promise<Bottle[]> {
     const bottles = await BottleModel.findAll({
-      where: { country_id: countryId },
+      where: { countryId },
     });
     return bottles.map(bottle => new Bottle(bottle.toJSON()));
   }

@@ -1,5 +1,5 @@
 import { IBottleCategoryRepository } from '@/interfaces/bottle-category-repository.interface';
-import BottleCategoryModel from './squelize-bottle-category.model';
+import BottleCategoryModel from './sequelize-bottle-category.model';
 
 export class SequelizeBottleCategoryRepository implements IBottleCategoryRepository {
   async create(bottleId: number, categoryId: number): Promise<void> {

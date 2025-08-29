@@ -1,9 +1,9 @@
 export type BottleProps = {
-  id: number;
+  id?: number;
   name: string;
   description: string;
   imageUrl: string;
-  country_id: number;
+  countryId: number;
   publicationStatusId: number;
 };
 

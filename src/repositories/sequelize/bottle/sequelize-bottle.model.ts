@@ -28,7 +28,7 @@ const BottleModel = sequelize.define<BottleInstance>(
     imageUrl: {
       type: DataTypes.STRING,
     },
-    country_id: {
+    countryId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
