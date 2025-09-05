@@ -1,15 +1,22 @@
+import { IBottleCategoryRepository } from '@/interfaces/bottle-category-repository.interface';
 import { IBottleRepository } from '@/interfaces/bottle-repository.interface';
 import { ICommentRepository } from '@/interfaces/comment-repository.interface';
 import { ICountryRepository } from '@/interfaces/country-repository.interface';
+import { IFavoriteRepository } from '@/interfaces/favorite-repository.interface';
 import { IImageSaver } from '@/interfaces/image-saver.interface';
 import { IProtectPassword } from '@/interfaces/protect-password.interface';
 import { IPublicationStatusRepository } from '@/interfaces/publication-status-repository.interface';
 import { SequelizeBottleRepository } from '@/repositories/sequelize/bottle/sequelize-bottle.repository';
 import SequelizeCategoryRepository from '@/repositories/sequelize/category/sequelize-category.repository';
+import { SequelizeCommentRepository } from '@/repositories/sequelize/comments/sequelize-comment.repository';
+import { SequelizeCountryRepository } from '@/repositories/sequelize/country/sequelize-country.repository';
+import { SequelizeFavoriteRepository } from '@/repositories/sequelize/favorite/sequelize-favorite.repository';
 import SequelizePublicationStatusRepository from '@/repositories/sequelize/publication-status/sequelize-publication-status.repository';
 import SequelizeUserRepository from '@/repositories/sequelize/user/sequelize-user.repository';
 import AuthService from '@/services/auth.service';
+import { BottleService } from '@/services/bottle.service';
 import CathegoryService from '@/services/category.service';
+import CountryService from '@/services/country.service';
 import S3Service from '@/services/s3.service';
 import UserService from '@/services/user.service';
 import { JwtAuthenticator } from '@/utils/jwt-authentificator';
@@ -19,11 +26,6 @@ import { asClass, asValue, createContainer } from 'awilix';
 import { IAuthenticator } from '../../interfaces/authenticator.interface';
 import { IIDGenerator } from '../../interfaces/id-generator.interface';
 import { UUIDGenerator } from '../../utils/uuid-generator';
-import { SequelizeCommentRepository } from '@/repositories/sequelize/comments/sequelize-comment.repository';
-import { SequelizeCountryRepository } from '@/repositories/sequelize/country/sequelize-country.repository';
-import { IFavoriteRepository } from '@/interfaces/favorite-repository.interface';
-import { IBottleCategoryRepository } from '@/interfaces/bottle-category-repository.interface';
-import { SequelizeFavoriteRepository } from '@/repositories/sequelize/favorite/sequelize-favorite.repository';
 import { SequelizeBottleCategoryRepository } from '@/repositories/sequelize/bottle-category/sequelize-bottle-category.repository';
 
 export interface Dependencies {
@@ -42,6 +44,8 @@ export interface Dependencies {
   publicationStatusRepository: IPublicationStatusRepository;
   favoriteRepository: IFavoriteRepository;
   bottleCategoryRepository: IBottleCategoryRepository;
+  bottleService: BottleService;
+  countryService: CountryService;
 }
 
 const container = createContainer<Dependencies>();
@@ -65,11 +69,16 @@ const idGenerator = container.resolve('idGenerator');
 const protectPassword = container.resolve('protectPassword');
 const imageSaver = container.resolve('imageSaver');
 const categoryRepository = container.resolve('categoryRepository');
+const bottleRepository = container.resolve('bottleRepository');
+const bottleCategoryRepository = container.resolve('bottleCategoryRepository');
+const countryRepository = container.resolve('countryRepository');
 
 container.register({
   authenticator: asValue(new JwtAuthenticator(userRepository)),
   userService: asValue(new UserService(userRepository, idGenerator, protectPassword, imageSaver)),
   categoryService: asValue(new CathegoryService(categoryRepository)),
+  bottleService: asValue(new BottleService(bottleRepository, bottleCategoryRepository, imageSaver)),
+  countryService: asValue(new CountryService(countryRepository)),
 });
 
 const authenticator = container.resolve('authenticator');
