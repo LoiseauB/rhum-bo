@@ -12,7 +12,7 @@
     "lint": "eslint --quiet src/",
     "lint:fix": "eslint --fix src/",
     "prepare": "husky",
-    "seed": "npx ts-node src/app/seeder/load-data.ts"
+    "seed": "npx ts-node -r tsconfig-paths/register src/app/seeder/load-data.ts"
   },
   "repository": {
     "type": "git",

@@ -4,7 +4,7 @@ import { countries } from './countries-data';
 
 async function loadCountry() {
   for (const country in countries) {
-    await container.resolve('countryService').create(country);
+    await container.resolve('countryService').create(countries[country]);
   }
 }
 
