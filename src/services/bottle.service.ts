@@ -7,7 +7,7 @@ import { awsFolderNames } from '@/utils/awsFolders';
 export type BottlePayload = {
   name: string;
   description: string;
-  image: Buffer;
+  image?: Buffer;
   countryId: number;
   categories: number[];
 };
@@ -22,6 +22,7 @@ export class BottleService {
   async createBottle({ name, description, image, countryId, categories }: BottlePayload): Promise<void> {
     let imageUrl: string | undefined;
     try {
+      if (!image) throw new Error('Image is required');
       imageUrl = await this.imageSaver.uploadImage(name.replace(' ', '-'), image, awsFolderNames.bottles);
       const bottle = await this.bottleRepository.create(
         new Bottle({ name, description, imageUrl, countryId, publicationStatusId: 0 }),
@@ -44,13 +45,19 @@ export class BottleService {
       if (!bottle) throw new Error('Bottle not found');
       if (image) {
         await this.imageSaver.deleteImage(bottle.props.name.replace(' ', '-'), awsFolderNames.bottles);
+        imageUrl = await this.imageSaver.uploadImage(name.replace(' ', '-'), image, awsFolderNames.bottles);
       }
 
-      imageUrl = await this.imageSaver.uploadImage(name.replace(' ', '-'), image, awsFolderNames.bottles);
+      bottle.props = {
+        ...bottle.props,
+        name,
+        description,
+        imageUrl: imageUrl || bottle.props.imageUrl,
+        countryId,
+      };
 
-      await this.bottleRepository.update(
-        new Bottle({ id, name, description, imageUrl, countryId, publicationStatusId: 0 }),
-      );
+      await this.bottleRepository.update(bottle);
+
       const bottleCategories = await this.bottleRepository.getCategories(id);
 
       for (const category of bottleCategories) {
