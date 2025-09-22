@@ -1,5 +1,5 @@
 export type PublicationStatusProps = {
-  id: number;
+  id?: number;
   label: string;
 };
 

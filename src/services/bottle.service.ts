@@ -4,14 +4,18 @@ import { BottleWithDetails, IBottleRepository } from '@/interfaces/bottle-reposi
 import { IImageSaver } from '@/interfaces/image-saver.interface';
 import { awsFolderNames } from '@/utils/awsFolders';
 
+export type BottleImage = {
+  buffer?: Buffer;
+  originalname?: string;
+};
+
 export type BottlePayload = {
   name: string;
   description: string;
-  image?: Buffer;
+  image?: BottleImage; // Au lieu de Buffer
   countryId: number;
   categories: number[];
 };
-
 export class BottleService {
   constructor(
     private readonly bottleRepository: IBottleRepository,
@@ -23,9 +27,9 @@ export class BottleService {
     let imageUrl: string | undefined;
     try {
       if (!image) throw new Error('Image is required');
-      imageUrl = await this.imageSaver.uploadImage(name.replace(' ', '-'), image, awsFolderNames.bottles);
+      imageUrl = await this.imageSaver.uploadImage(image.originalname!, image.buffer!, awsFolderNames.bottles);
       const bottle = await this.bottleRepository.create(
-        new Bottle({ name, description, imageUrl, countryId, publicationStatusId: 0 }),
+        new Bottle({ name, description, imageUrl, countryId, publicationStatusId: 2 }),
       );
       for (const category of categories) {
         await this.bottleCategoryRepository.create(bottle.props.id!, category);
@@ -45,7 +49,7 @@ export class BottleService {
       if (!bottle) throw new Error('Bottle not found');
       if (image) {
         await this.imageSaver.deleteImage(bottle.props.name.replace(' ', '-'), awsFolderNames.bottles);
-        imageUrl = await this.imageSaver.uploadImage(name.replace(' ', '-'), image, awsFolderNames.bottles);
+        imageUrl = await this.imageSaver.uploadImage(image.originalname!, image.buffer!, awsFolderNames.bottles);
       }
 
       bottle.props = {

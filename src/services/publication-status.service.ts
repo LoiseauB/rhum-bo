@@ -1,13 +1,13 @@
+import { Bottle } from '@/entities/bottle.entity';
+import { Comment } from '@/entities/comment.entity';
 import { PublicationStatus, PublicationStatusProps } from '@/entities/publication-status.entity';
 import { IPublicationStatusRepository } from '@/interfaces/publication-status-repository.interface';
-import { Comment } from '@/entities/comment.entity';
-import { Bottle } from '@/entities/bottle.entity';
 
 class PublicationStatusService {
   constructor(private publicationStatusRepository: IPublicationStatusRepository) {}
 
-  async create(publicationStatus: PublicationStatusProps): Promise<PublicationStatusProps> {
-    return this.publicationStatusRepository.create(publicationStatus);
+  async create(label: string): Promise<PublicationStatusProps> {
+    return this.publicationStatusRepository.create(new PublicationStatus({ label }).props);
   }
 
   async update(id: number, publicationStatus: Partial<PublicationStatusProps>): Promise<PublicationStatus | null> {

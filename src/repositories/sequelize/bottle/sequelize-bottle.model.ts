@@ -22,7 +22,7 @@ const BottleModel = sequelize.define<BottleInstance>(
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     imageUrl: {
@@ -49,20 +49,20 @@ const BottleModel = sequelize.define<BottleInstance>(
   },
   {
     tableName: 'bottles',
-    hooks: {
-      beforeCreate: async bottle => {
-        const categories = await bottle.getCategories();
-        if (categories.length === 0) {
-          throw new Error('Une bouteille doit avoir au moins une catégorie.');
-        }
-      },
-      beforeUpdate: async bottle => {
-        const categories = await bottle.getCategories();
-        if (categories.length === 0) {
-          throw new Error('Une bouteille doit avoir au moins une catégorie.');
-        }
-      },
-    },
+    // hooks: {
+    //   beforeCreate: async bottle => {
+    //     const categories = await bottle.getCategories();
+    //     if (categories.length === 0) {
+    //       throw new Error('Une bouteille doit avoir au moins une catégorie.');
+    //     }
+    //   },
+    //   beforeUpdate: async bottle => {
+    //     const categories = await bottle.getCategories();
+    //     if (categories.length === 0) {
+    //       throw new Error('Une bouteille doit avoir au moins une catégorie.');
+    //     }
+    //   },
+    // },
   },
 );
 

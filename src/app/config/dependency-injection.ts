@@ -27,6 +27,7 @@ import { IAuthenticator } from '../../interfaces/authenticator.interface';
 import { IIDGenerator } from '../../interfaces/id-generator.interface';
 import { UUIDGenerator } from '../../utils/uuid-generator';
 import { SequelizeBottleCategoryRepository } from '@/repositories/sequelize/bottle-category/sequelize-bottle-category.repository';
+import PublicationStatusService from '@/services/publication-status.service';
 
 export interface Dependencies {
   userService: UserService;
@@ -42,6 +43,7 @@ export interface Dependencies {
   commentRepository: ICommentRepository;
   countryRepository: ICountryRepository;
   publicationStatusRepository: IPublicationStatusRepository;
+  publicationStatusService: PublicationStatusService;
   favoriteRepository: IFavoriteRepository;
   bottleCategoryRepository: IBottleCategoryRepository;
   bottleService: BottleService;
@@ -72,6 +74,7 @@ const categoryRepository = container.resolve('categoryRepository');
 const bottleRepository = container.resolve('bottleRepository');
 const bottleCategoryRepository = container.resolve('bottleCategoryRepository');
 const countryRepository = container.resolve('countryRepository');
+const publicationStatusRepository = container.resolve('publicationStatusRepository');
 
 container.register({
   authenticator: asValue(new JwtAuthenticator(userRepository)),
@@ -79,6 +82,7 @@ container.register({
   categoryService: asValue(new CathegoryService(categoryRepository)),
   bottleService: asValue(new BottleService(bottleRepository, bottleCategoryRepository, imageSaver)),
   countryService: asValue(new CountryService(countryRepository)),
+  publicationStatusService: asValue(new PublicationStatusService(publicationStatusRepository)),
 });
 
 const authenticator = container.resolve('authenticator');

@@ -3,7 +3,11 @@ import BottleCategoryModel from './sequelize-bottle-category.model';
 
 export class SequelizeBottleCategoryRepository implements IBottleCategoryRepository {
   async create(bottleId: number, categoryId: number): Promise<void> {
-    await BottleCategoryModel.create({ bottleId, categoryId });
+    console.log(bottleId, categoryId);
+    await BottleCategoryModel.create({
+      bottle_id: bottleId,
+      category_id: categoryId,
+    });
   }
 
   async delete(bottleId: number, categoryId: number): Promise<void> {
