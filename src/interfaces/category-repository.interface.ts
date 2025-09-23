@@ -1,7 +1,7 @@
 import { CategoryProps } from '@/entities/category.entity';
 
 export interface ICategoryRepository {
-  create(category: CategoryProps): Promise<void>;
+  create(label: string): Promise<void>;
   findAll(): Promise<CategoryProps[]>;
   findById(id: number): Promise<CategoryProps | null>;
   update(id: number, category: Partial<CategoryProps>): Promise<void>;

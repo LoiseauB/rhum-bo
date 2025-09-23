@@ -1,7 +1,7 @@
 import multer from 'multer';
 import path from 'path';
 
-const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
+const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.heic'];
 
 const upload = multer({
   storage: multer.memoryStorage(),
