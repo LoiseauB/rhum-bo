@@ -21,7 +21,7 @@ export interface IBottleRepository {
   delete(id: number): Promise<void>;
   findById(id: number): Promise<Bottle | null>;
   findByIdWithDetails(id: number): Promise<BottleWithDetails | null>;
-  findByName(name: string): Promise<Bottle[] | null>;
+  findByName(name: string): Promise<Bottle[]>;
   findAll(): Promise<Bottle[]>;
   getCategories(id: number): Promise<Category[]>;
   getBottlesByCountryId(countryId: number): Promise<Bottle[]>;

@@ -4,7 +4,7 @@ import path from 'path';
 
 export const bottles: BottlePayload[] = [
   {
-    name: 'Rhum Trois Rivière Ambré',
+    name: 'Rhum Trois Rivières Ambré',
     description: `
     **Type** :
     Rhum agricole AOC Martinique, vieilli 12-18 mois en fûts de chêne, distillé à partir de pur jus de canne (vesou).

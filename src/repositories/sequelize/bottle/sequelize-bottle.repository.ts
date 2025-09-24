@@ -2,11 +2,12 @@ import { Bottle } from '@/entities/bottle.entity';
 import { Category } from '@/entities/category.entity';
 import { BottleWithDetails, IBottleRepository } from '@/interfaces/bottle-repository.interface';
 import { sequelize } from '@/utils/connectDB';
+import { Op } from 'sequelize';
+import CategoryModel from '../category/sequelize-category.model';
 import CommentModel from '../comments/sequelize-comment.model';
 import RateModel from '../rate/sequelize-rate.model';
 import UserModel from '../user/sequelize-user.model';
 import BottleModel from './sequelize-bottle.model';
-import CategoryModel from '../category/sequelize-category.model';
 
 export class SequelizeBottleRepository implements IBottleRepository {
   async create(bottle: Bottle): Promise<Bottle> {
@@ -70,13 +71,25 @@ export class SequelizeBottleRepository implements IBottleRepository {
     return bottle ? bottle : null;
   }
 
-  async findByName(name: string): Promise<Bottle[] | null> {
-    const bottle = await BottleModel.findAll({
+  async findByName(name: string): Promise<Bottle[]> {
+    if (!name.trim()) {
+      return [];
+    }
+
+    const keywords = name.split(' ').filter(word => word.length > 0);
+    const conditions = keywords.map(keyword => ({
+      name: {
+        [Op.like]: `%${keyword}%`,
+      },
+    }));
+
+    const bottles = await BottleModel.findAll({
       where: {
-        name,
+        [Op.and]: conditions,
       },
     });
-    return bottle ? bottle.map(bottle => new Bottle(bottle.toJSON())) : null;
+
+    return bottles.length > 0 ? bottles.map(bottle => new Bottle(bottle.toJSON())) : [];
   }
 
   async findAll(): Promise<Bottle[]> {

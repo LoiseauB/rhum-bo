@@ -93,7 +93,6 @@ export class BottleService {
 
   async searchBottles(query: string): Promise<Bottle[]> {
     const bottles = await this.bottleRepository.findByName(query);
-    if (!bottles || bottles?.length === 0) throw new Error('Bottle not found');
     return bottles;
   }
 

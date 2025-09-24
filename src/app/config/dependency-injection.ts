@@ -28,6 +28,9 @@ import { IIDGenerator } from '../../interfaces/id-generator.interface';
 import { UUIDGenerator } from '../../utils/uuid-generator';
 import { SequelizeBottleCategoryRepository } from '@/repositories/sequelize/bottle-category/sequelize-bottle-category.repository';
 import PublicationStatusService from '@/services/publication-status.service';
+import OcrService from '@/services/ocr.service';
+import { IAIClient } from '@/interfaces/ai-client.interface';
+import MistralAI from '@/utils/mistralClient';
 
 export interface Dependencies {
   userService: UserService;
@@ -48,6 +51,8 @@ export interface Dependencies {
   bottleCategoryRepository: IBottleCategoryRepository;
   bottleService: BottleService;
   countryService: CountryService;
+  ocrService: OcrService;
+  aiClient: IAIClient;
 }
 
 const container = createContainer<Dependencies>();
@@ -64,6 +69,7 @@ container.register({
   publicationStatusRepository: asValue(new SequelizePublicationStatusRepository()),
   favoriteRepository: asValue(new SequelizeFavoriteRepository()),
   bottleCategoryRepository: asValue(new SequelizeBottleCategoryRepository()),
+  aiClient: asValue(new MistralAI()),
 });
 
 const userRepository = container.resolve('userRepository');
@@ -75,6 +81,7 @@ const bottleRepository = container.resolve('bottleRepository');
 const bottleCategoryRepository = container.resolve('bottleCategoryRepository');
 const countryRepository = container.resolve('countryRepository');
 const publicationStatusRepository = container.resolve('publicationStatusRepository');
+const aiClient = container.resolve('aiClient');
 
 container.register({
   authenticator: asValue(new JwtAuthenticator(userRepository)),
@@ -83,6 +90,7 @@ container.register({
   bottleService: asValue(new BottleService(bottleRepository, bottleCategoryRepository, imageSaver)),
   countryService: asValue(new CountryService(countryRepository)),
   publicationStatusService: asValue(new PublicationStatusService(publicationStatusRepository)),
+  ocrService: asValue(new OcrService(aiClient)),
 });
 
 const authenticator = container.resolve('authenticator');
