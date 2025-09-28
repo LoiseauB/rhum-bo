@@ -11,7 +11,7 @@ const RateModel = sequelize.define<RateInstance>(
   {
     rate: {
       type: DataTypes.TINYINT,
-      field: 'rating',
+      field: 'rate',
       allowNull: false,
       validate: {
         isIn: [[1, 2, 3, 4, 5]],

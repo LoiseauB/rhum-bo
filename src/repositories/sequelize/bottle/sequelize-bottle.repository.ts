@@ -8,6 +8,7 @@ import CommentModel from '../comments/sequelize-comment.model';
 import RateModel from '../rate/sequelize-rate.model';
 import UserModel from '../user/sequelize-user.model';
 import BottleModel from './sequelize-bottle.model';
+import CountryModel from '../country/sequelize-country.model';
 
 export class SequelizeBottleRepository implements IBottleRepository {
   async create(bottle: Bottle): Promise<Bottle> {
@@ -42,31 +43,38 @@ export class SequelizeBottleRepository implements IBottleRepository {
       include: [
         {
           model: CategoryModel,
-          as: 'categories',
+          as: 'Categories',
           attributes: ['label'],
+        },
+        {
+          model: CountryModel,
+          as: 'country',
+          attributes: ['name'],
         },
         {
           model: RateModel,
           as: 'rates',
           attributes: [],
+          required: false,
         },
         {
           model: CommentModel,
           as: 'comments',
           attributes: ['id', 'text', 'userId', 'updatedAt'],
+          required: false,
           include: [
             {
               model: UserModel,
-              as: 'users',
+              as: 'user',
               attributes: ['pseudo', 'avatar'],
             },
           ],
         },
       ],
       attributes: {
-        include: [[sequelize.literal('ROUND(AVG(ratings.rating), 0)'), 'avgRating']],
+        include: [[sequelize.literal('ROUND(AVG(rates.rate), 0)'), 'avgRating']],
       },
-      group: ['Bottle.id', 'comments.id'],
+      group: ['Bottle.id', 'comments.id', 'Categories.label'],
     })) as unknown as BottleWithDetails;
     return bottle ? bottle : null;
   }

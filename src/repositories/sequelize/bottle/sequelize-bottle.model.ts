@@ -49,20 +49,6 @@ const BottleModel = sequelize.define<BottleInstance>(
   },
   {
     tableName: 'bottles',
-    // hooks: {
-    //   beforeCreate: async bottle => {
-    //     const categories = await bottle.getCategories();
-    //     if (categories.length === 0) {
-    //       throw new Error('Une bouteille doit avoir au moins une catégorie.');
-    //     }
-    //   },
-    //   beforeUpdate: async bottle => {
-    //     const categories = await bottle.getCategories();
-    //     if (categories.length === 0) {
-    //       throw new Error('Une bouteille doit avoir au moins une catégorie.');
-    //     }
-    //   },
-    // },
   },
 );
 

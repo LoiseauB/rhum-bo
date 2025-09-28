@@ -35,3 +35,16 @@ export const searchBottle = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getBottleById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const bottle = await container.resolve('bottleService').getBottle(Number(id));
+    if (!bottle) {
+      res.status(404).json({ message: 'Bottles not found' });
+    }
+    res.status(200).json({ message: 'Bottle found', data: bottle });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
